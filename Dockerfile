@@ -14,4 +14,5 @@ WORKDIR /app
 RUN go build -o main .
 
 # Default Command 
+EXPOSE 8080
 CMD ["/app/main"]
