@@ -5,5 +5,5 @@ services :
 before_install :
   - docker build -t ravi2908/docker-go -f Dockerfile.dev .  
 
-script : 
-  - docker run ravi2908/docker-go go test -- --coverage
+# script : 
+#   - docker run ravi2908/docker-go go test -- --coverage

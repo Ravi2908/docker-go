@@ -5,19 +5,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 	"time"
-
-	"github.com/go-redis/redis"
 )
 
-const message = "Hello Go lang"
-
-var redisdb *redis.Client
+const message = "Go lang Docker Kubernetes Travis AWS Integration"
 
 func main() {
-	initRedis()
-	initRedisSets()
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -25,62 +18,12 @@ func main() {
 		w.Write([]byte(message))
 	})
 
-	mux.HandleFunc("/increaseVisit", increaseVisit)
 	srv := NewServer(mux)
 
-	fmt.Println("Listening to Port  :8081")
+	fmt.Println("Listening to Port  :8080")
 	err := srv.ListenAndServe()
 	if err != nil {
 		log.Fatal("Server failed to start: ", err)
-	}
-
-}
-
-func initRedis() {
-	redisdb = redis.NewClient(&redis.Options{
-		Addr:         "redis-server:6379",
-		DialTimeout:  10 * time.Second,
-		ReadTimeout:  30 * time.Second,
-		WriteTimeout: 30 * time.Second,
-		PoolSize:     10,
-		PoolTimeout:  30 * time.Second,
-	})
-}
-
-func initRedisSets() {
-	if err := redisdb.Set("visits", 0, 0).Err(); err != nil {
-		panic(err)
-	}
-
-}
-func increaseVisit(w http.ResponseWriter, r *http.Request) {
-	client := redis.NewClient(&redis.Options{
-		Addr:     "redis-server:6379",
-		Password: "",
-		DB:       0,
-	})
-
-	_, err := client.Ping().Result()
-	if err != nil {
-		panic(err)
-	}
-
-	// fmt.Fprintf(w, "Hello, %q", pong)
-
-	visit, err := client.Get("visits").Result()
-	if err != nil {
-		fmt.Println("Error Fetching the Visits", err)
-	}
-
-	w.Write([]byte("Number of visit: " + visit))
-
-	visNumber, err := strconv.Atoi(visit)
-	if err != nil {
-		fmt.Println("Error fetching the visit number")
-	}
-
-	if err := client.Set("visits", visNumber+1, 0).Err(); err != nil {
-		fmt.Println("Error Updateing visit number")
 	}
 
 }
@@ -105,7 +48,7 @@ func NewServer(mux *http.ServeMux) *http.Server {
 	}
 
 	srv := &http.Server{
-		Addr:         ":8081",
+		Addr:         ":8080",
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 		IdleTimeout:  120 * time.Second,
