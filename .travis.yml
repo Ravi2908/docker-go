@@ -1,0 +1,9 @@
+sudo : required
+services : 
+  - docker
+
+before_install :
+  - docker build -t ravi2908/docker-go Dockerfile.dev .  
+
+script : 
+  - docker run ravi2908/docker-go go test -- --coverage
